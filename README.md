@@ -7,31 +7,40 @@ An end-to-end AI-powered store analytics system that converts raw CCTV footage i
 
 ---
 
-## Deployment to Railway
+## 🚀 Live Deployment
 
-### Option 1: Direct Railway Deployment (Recommended)
+- **Live API**: https://purplle-store-intelligence-production.up.railway.app
+- **Interactive Docs**: https://purplle-store-intelligence-production.up.railway.app/docs
+- **GitHub**: https://github.com/uvenkatateja/purplle-store-intelligence
 
-1. **Push to GitHub**
-   ```bash
-   git init
-   git add .
-   git commit -m "Store Intelligence API"
-   git push origin main
-   ```
+### Quick Test Links (Click to Open)
+- [Health Check](https://purplle-store-intelligence-production.up.railway.app/health)
+- [Store Metrics](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/metrics?date=2026-04-10)
+- [Conversion Funnel](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/funnel?date=2026-04-10)
+- [Zone Heatmap](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/heatmap?date=2026-04-10)
+- [Anomalies](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/anomalies)
 
-2. **Deploy on Railway**
-   - Go to [railway.app](https://railway.app)
-   - Click "New Project" → "Deploy from GitHub repo"
-   - Select your repository
-   - Railway will auto-detect the Dockerfile and deploy
-   - Your API will be live at `https://your-app.railway.app`
+---
 
-3. **Ingest events to Railway**
-   ```bash
-   python scripts/ingest_events.py --api https://your-app.railway.app
-   ```
+## Deployment
 
-### Option 2: Local Docker (For Testing Only)
+### ✅ Already Deployed on Railway!
+
+The API is live at: **https://purplle-store-intelligence-production.up.railway.app**
+
+Test it now:
+```bash
+# Health check
+curl https://purplle-store-intelligence-production.up.railway.app/health
+
+# Get metrics (April 10, 2026 - date of video footage)
+curl "https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/metrics?date=2026-04-10"
+
+# Get funnel
+curl "https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/funnel?date=2026-04-10"
+```
+
+### Local Docker (Optional)
 
 ```bash
 # Build and run locally
@@ -40,18 +49,27 @@ docker compose up --build -d
 # Ingest events
 python scripts/ingest_events.py
 
-# View logs
-docker compose logs -f
-
 # Stop
 docker compose down
 ```
 
-**Note**: Local Docker build takes ~10 minutes due to dependencies. Railway deployment is faster and recommended.
-
 ---
 
-## Quick Start (Local)
+## Quick Start
+
+### Option 1: Use the Live API (Recommended)
+
+The API is already deployed and running! Just test it:
+
+```bash
+# Test the live API
+curl "https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/metrics?date=2026-04-10"
+
+# Or open in browser
+https://purplle-store-intelligence-production.up.railway.app/docs
+```
+
+### Option 2: Run Locally
 
 ```bash
 # 1. Install API dependencies only (lightweight)
@@ -64,14 +82,13 @@ uvicorn app.main:app --reload
 python scripts/ingest_events.py
 
 # 4. Verify the API is working
-curl http://localhost:8000/stores/STORE_BLR_001/metrics
+curl "http://localhost:8000/stores/STORE_BLR_001/metrics?date=2026-04-10"
 
 # 5. Launch the live dashboard
 python dashboard.py
 ```
 
-The API is available at **http://localhost:8000**
-
+Local API: **http://localhost:8000**  
 Interactive docs: **http://localhost:8000/docs**
 
 ---
@@ -111,18 +128,56 @@ python scripts/ingest_events.py --file data/events.jsonl --api http://localhost:
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/events/ingest` | Ingest batch of events (up to 500) |
-| `GET` | `/stores/{id}/metrics` | Real-time store metrics |
-| `GET` | `/stores/{id}/funnel` | Conversion funnel |
-| `GET` | `/stores/{id}/heatmap` | Zone heatmap |
-| `GET` | `/stores/{id}/anomalies` | Active anomalies |
-| `GET` | `/health` | System health |
+| Method | Endpoint | Description | Live URL |
+|--------|----------|-------------|----------|
+| `POST` | `/events/ingest` | Ingest batch of events (up to 500) | [Try it](https://purplle-store-intelligence-production.up.railway.app/docs#/default/ingest_events_events_ingest_post) |
+| `GET` | `/stores/{id}/metrics` | Real-time store metrics | [Test](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/metrics?date=2026-04-10) |
+| `GET` | `/stores/{id}/funnel` | Conversion funnel | [Test](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/funnel?date=2026-04-10) |
+| `GET` | `/stores/{id}/heatmap` | Zone heatmap | [Test](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/heatmap?date=2026-04-10) |
+| `GET` | `/stores/{id}/anomalies` | Active anomalies | [Test](https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/anomalies) |
+| `GET` | `/health` | System health | [Test](https://purplle-store-intelligence-production.up.railway.app/health) |
+
+### Example: Get metrics
+```bash
+# Live API
+curl "https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/metrics?date=2026-04-10"
+
+# Response
+{
+  "store_id": "STORE_BLR_001",
+  "date": "2026-04-10",
+  "unique_visitors": 134,
+  "conversion_rate": 0.0,
+  "avg_dwell_per_zone": {
+    "SKINCARE": 30040.0,
+    "HAIRCARE": 30030.0
+  },
+  "queue_depth": 0,
+  "abandonment_rate": 0.0
+}
+```
+
+### Example: Get funnel
+```bash
+# Live API
+curl "https://purplle-store-intelligence-production.up.railway.app/stores/STORE_BLR_001/funnel?date=2026-04-10"
+
+# Response
+{
+  "store_id": "STORE_BLR_001",
+  "date": "2026-04-10",
+  "funnel": [
+    {"stage": "Entry", "visitor_count": 134, "drop_off_pct": 0.0},
+    {"stage": "Zone Visit", "visitor_count": 100, "drop_off_pct": 25.37},
+    {"stage": "Billing Zone", "visitor_count": 0, "drop_off_pct": 100.0},
+    {"stage": "Purchase", "visitor_count": 0, "drop_off_pct": 100.0}
+  ]
+}
+```
 
 ### Example: Ingest events
 ```bash
-curl -X POST http://localhost:8000/events/ingest \
+curl -X POST https://purplle-store-intelligence-production.up.railway.app/events/ingest \
   -H "Content-Type: application/json" \
   -d '{
     "events": [{
@@ -139,16 +194,6 @@ curl -X POST http://localhost:8000/events/ingest \
       "metadata": {"session_seq": 1}
     }]
   }'
-```
-
-### Example: Get metrics
-```bash
-curl "http://localhost:8000/stores/STORE_BLR_001/metrics?date=2026-04-10"
-```
-
-### Example: Get funnel
-```bash
-curl "http://localhost:8000/stores/STORE_BLR_001/funnel?date=2026-04-10"
 ```
 
 ---
@@ -258,5 +303,20 @@ See [`docs/CHOICES.md`](docs/CHOICES.md) for:
 - **Store ID**: STORE_BLR_001
 - **Store Name**: Brigade_Bangalore
 - **Date**: 2026-04-10
-- **Cameras**: 5 (2 entry, 2 floor, 1 billing)
+- **Events Ingested**: 146 events
+- **Unique Visitors**: 134
 - **Zones**: ENTRY, SKINCARE, MAKEUP, HAIRCARE, BODYCARE, BILLING
+
+---
+
+## 📊 Live Data Summary
+
+The system has processed real CCTV footage and ingested 146 events:
+
+- **134 unique visitors** tracked across the store
+- **100 zone visits** (SKINCARE: 62, HAIRCARE: 38)
+- **Average dwell time**: ~30 seconds per zone
+- **Conversion funnel**: Entry (134) → Zone Visit (100) → Billing (0) → Purchase (0)
+- **Data confidence**: HIGH (sufficient sample size)
+
+Test the live API to see real analytics!
